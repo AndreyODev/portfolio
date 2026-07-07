@@ -1,5 +1,6 @@
 import { AboutSection } from '@/presentation/components/about/AboutSection'
 import { HeroSection } from '@/presentation/components/hero/HeroSection'
+import { SkillsSection } from '@/presentation/components/skills/SkillsSection'
 import { Section } from '@/presentation/components/Section'
 
 export function HomePage() {
@@ -9,14 +10,7 @@ export function HomePage() {
 
       <AboutSection />
 
-      <Section id="skills" label="03 · skills">
-        <h2 className="font-display text-display-md font-medium">
-          Stack por camada
-        </h2>
-        <p className="mt-4 max-w-2xl font-body text-body-md text-text-primary/70">
-          Seção skills — em construção.
-        </p>
-      </Section>
+      <SkillsSection />
 
       <Section id="projetos" label="04 · projetos">
         <h2 className="font-display text-display-md font-medium">Projetos</h2>

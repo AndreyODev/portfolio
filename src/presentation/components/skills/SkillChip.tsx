@@ -1,0 +1,47 @@
+import type { ProficiencyLevel } from '@/domain/types'
+import type { Skill } from '@/domain/entities/Skill'
+
+const LEVEL_LABELS: Record<ProficiencyLevel, string> = {
+  dominated: 'dominado',
+  proficient: 'proficiente',
+  learning: 'em estudo',
+}
+
+function getChipStyles(skill: Skill): string {
+  if (skill.id === 'spring-boot') {
+    return 'border-dashed border-accent/35 bg-bg-primary text-text-primary/70'
+  }
+
+  switch (skill.level) {
+    case 'dominated':
+      return 'border-accent bg-accent/5 text-accent-light'
+    case 'proficient':
+      return 'border-accent/50 bg-bg-surface/40 text-text-primary'
+    case 'learning':
+      return 'border-dashed border-accent/60 bg-bg-surface/30 text-text-primary'
+    default:
+      return 'border-text-secondary text-text-primary/70'
+  }
+}
+
+function getLevelLabel(skill: Skill): string {
+  if (skill.id === 'spring-boot') return 'próximo'
+  return LEVEL_LABELS[skill.level]
+}
+
+interface SkillChipProps {
+  skill: Skill
+}
+
+export function SkillChip({ skill }: SkillChipProps) {
+  return (
+    <li
+      className={`inline-flex items-center gap-2 border px-3 py-2 ${getChipStyles(skill)}`}
+    >
+      <span className="font-mono text-body-sm">{skill.name}</span>
+      <span className="font-mono text-[0.6rem] uppercase tracking-wider text-text-primary/40">
+        {getLevelLabel(skill)}
+      </span>
+    </li>
+  )
+}
