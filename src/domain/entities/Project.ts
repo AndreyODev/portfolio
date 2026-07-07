@@ -8,7 +8,8 @@ export interface Project {
   stack: string[]
   type: ProjectType
   teamContext?: string
-  repositoryUrl: string
+  repositoryUrl?: string
+  isPrivate?: boolean
   relevanceRank: number
   featured: boolean
 }
