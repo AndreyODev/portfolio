@@ -31,6 +31,7 @@ interface ContactFormProps {
   values: ContactFormValues
   errors: Partial<Record<keyof ContactFormValues, string>>
   isSubmitting: boolean
+  isSuccess: boolean
   onChange: (field: keyof ContactFormValues, value: string) => void
   onSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
@@ -39,6 +40,7 @@ export function ContactForm({
   values,
   errors,
   isSubmitting,
+  isSuccess,
   onChange,
   onSubmit,
 }: ContactFormProps) {
@@ -97,8 +99,14 @@ export function ContactForm({
           disabled={isSubmitting}
           className="mt-auto w-full border border-accent px-6 py-3 font-mono text-label uppercase text-accent-light transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
-          {isSubmitting ? 'abrindo…' : 'enviar mensagem'}
+          {isSubmitting ? 'enviando…' : 'enviar mensagem'}
         </button>
+
+        {isSuccess && (
+          <p className="font-mono text-[0.7rem] text-accent-light" role="status">
+            Mensagem enviada com sucesso.
+          </p>
+        )}
       </form>
     </div>
   )

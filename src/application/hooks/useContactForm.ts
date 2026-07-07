@@ -1,5 +1,9 @@
+import emailjs from '@emailjs/browser'
 import { useState, type FormEvent } from 'react'
-import { isPlaceholder } from '@/shared/utils/isPlaceholder'
+import {
+  emailjsConfig,
+  isEmailjsConfigured,
+} from '@/shared/config/emailjs'
 
 export interface ContactFormValues {
   name: string
@@ -9,15 +13,11 @@ export interface ContactFormValues {
 
 type ContactFormField = keyof ContactFormValues
 
-interface UseContactFormOptions {
-  recipientEmail: string
-}
-
 interface UseContactFormResult {
   values: ContactFormValues
   errors: Partial<Record<ContactFormField, string>>
   isSubmitting: boolean
-  isRecipientConfigured: boolean
+  isSuccess: boolean
   handleChange: (field: ContactFormField, value: string) => void
   handleSubmit: (event: FormEvent<HTMLFormElement>) => void
 }
@@ -48,9 +48,7 @@ function validate(
   return errors
 }
 
-export function useContactForm({
-  recipientEmail,
-}: UseContactFormOptions): UseContactFormResult {
+export function useContactForm(): UseContactFormResult {
   const [values, setValues] = useState<ContactFormValues>({
     name: '',
     email: '',
@@ -60,11 +58,11 @@ export function useContactForm({
     {},
   )
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const isRecipientConfigured = !isPlaceholder(recipientEmail)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   function handleChange(field: ContactFormField, value: string) {
     setValues((current) => ({ ...current, [field]: value }))
+    setIsSuccess(false)
     if (errors[field]) {
       setErrors((current) => {
         const next = { ...current }
@@ -74,8 +72,9 @@ export function useContactForm({
     }
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setIsSuccess(false)
 
     const nextErrors = validate(values)
     if (Object.keys(nextErrors).length > 0) {
@@ -83,30 +82,45 @@ export function useContactForm({
       return
     }
 
-    if (!isRecipientConfigured) {
-      setErrors({ message: 'Canal de envio ainda não configurado.' })
+    if (!isEmailjsConfigured()) {
+      setErrors({
+        message: 'Serviço de e-mail não configurado. Verifique o .env.local.',
+      })
       return
     }
 
     setIsSubmitting(true)
+    setErrors({})
 
-    const subject = encodeURIComponent(
-      `Contato via portfólio — ${values.name.trim()}`,
-    )
-    const body = encodeURIComponent(
-      `Nome: ${values.name.trim()}\nE-mail: ${values.email.trim()}\n\n${values.message.trim()}`,
-    )
+    try {
+      await emailjs.send(
+        emailjsConfig.serviceId,
+        emailjsConfig.templateId,
+        {
+          from_name: values.name.trim(),
+          from_email: values.email.trim(),
+          message: values.message.trim(),
+          reply_to: values.email.trim(),
+        },
+        { publicKey: emailjsConfig.publicKey },
+      )
 
-    window.location.href = `mailto:${recipientEmail}?subject=${subject}&body=${body}`
-
-    setIsSubmitting(false)
+      setValues({ name: '', email: '', message: '' })
+      setIsSuccess(true)
+    } catch {
+      setErrors({
+        message: 'Não foi possível enviar. Tente novamente em instantes.',
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return {
     values,
     errors,
     isSubmitting,
-    isRecipientConfigured,
+    isSuccess,
     handleChange,
     handleSubmit,
   }

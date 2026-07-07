@@ -32,8 +32,8 @@ interface ContactContentProps {
 }
 
 function ContactContent({ profile }: ContactContentProps) {
-  const { values, errors, isSubmitting, handleChange, handleSubmit } =
-    useContactForm({ recipientEmail: profile.email })
+  const { values, errors, isSubmitting, isSuccess, handleChange, handleSubmit } =
+    useContactForm()
 
   return (
     <div className="space-y-10">
@@ -52,6 +52,7 @@ function ContactContent({ profile }: ContactContentProps) {
             values={values}
             errors={errors}
             isSubmitting={isSubmitting}
+            isSuccess={isSuccess}
             onChange={handleChange}
             onSubmit={handleSubmit}
           />
