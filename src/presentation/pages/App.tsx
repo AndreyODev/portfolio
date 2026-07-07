@@ -1,3 +1,5 @@
+import { ArchitectureStatus } from '@/presentation/components/ArchitectureStatus'
+
 const swatches = [
   { name: 'bg-primary', className: 'bg-bg-primary border border-text-secondary' },
   { name: 'bg-surface', className: 'bg-bg-surface border border-text-secondary' },
@@ -41,6 +43,8 @@ export function App() {
             Mono — JetBrains Mono · presentation · application · data
           </p>
         </section>
+
+        <ArchitectureStatus />
       </div>
     </main>
   )
