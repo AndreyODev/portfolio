@@ -1,16 +1,10 @@
+import { HeroSection } from '@/presentation/components/hero/HeroSection'
 import { Section } from '@/presentation/components/Section'
 
 export function HomePage() {
   return (
     <>
-      <Section id="hero" label="01 · início">
-        <h1 className="font-display text-display-lg font-medium text-balance">
-          Desenvolvedor Full Stack
-        </h1>
-        <p className="mt-4 max-w-xl font-body text-body-md text-text-primary/70">
-          Seção hero — em construção.
-        </p>
-      </Section>
+      <HeroSection />
 
       <Section id="sobre" label="02 · sobre">
         <h2 className="font-display text-display-md font-medium">Trajetória</h2>
