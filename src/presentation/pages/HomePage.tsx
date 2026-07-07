@@ -1,3 +1,4 @@
+import { AboutSection } from '@/presentation/components/about/AboutSection'
 import { HeroSection } from '@/presentation/components/hero/HeroSection'
 import { Section } from '@/presentation/components/Section'
 
@@ -6,12 +7,7 @@ export function HomePage() {
     <>
       <HeroSection />
 
-      <Section id="sobre" label="02 · sobre">
-        <h2 className="font-display text-display-md font-medium">Trajetória</h2>
-        <p className="mt-4 max-w-2xl font-body text-body-md text-text-primary/70">
-          Seção sobre — em construção.
-        </p>
-      </Section>
+      <AboutSection />
 
       <Section id="skills" label="03 · skills">
         <h2 className="font-display text-display-md font-medium">
