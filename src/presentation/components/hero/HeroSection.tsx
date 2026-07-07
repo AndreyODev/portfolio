@@ -8,9 +8,9 @@ function HeroSkeleton() {
       id="hero"
       aria-busy="true"
       aria-label="Carregando"
-      className="scroll-mt-16 min-h-[calc(100vh-4rem)] border-b border-text-secondary/60 px-4 py-20 sm:px-6 md:px-12 lg:px-20"
+      className="scroll-mt-16 flex min-h-dvh items-center border-b border-text-secondary/60 px-4 py-12 sm:px-6 md:px-12 lg:px-20"
     >
-      <div className="mx-auto max-w-5xl animate-pulse space-y-6">
+      <div className="mx-auto w-full max-w-5xl animate-pulse space-y-6">
         <div className="h-4 w-24 rounded-sm bg-bg-surface" />
         <div className="h-16 w-64 rounded-sm bg-bg-surface" />
         <div className="h-6 w-full max-w-md rounded-sm bg-bg-surface" />
@@ -28,7 +28,7 @@ export function HeroSection() {
     return (
       <section
         id="hero"
-        className="scroll-mt-16 min-h-[calc(100vh-4rem)] border-b border-text-secondary/60 px-4 py-20 sm:px-6 md:px-12 lg:px-20"
+        className="scroll-mt-16 flex min-h-dvh items-center border-b border-text-secondary/60 px-4 py-12 sm:px-6 md:px-12 lg:px-20"
       >
         <p className="font-mono text-body-sm text-accent">
           Não foi possível carregar o perfil.
@@ -41,9 +41,9 @@ export function HeroSection() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="scroll-mt-16 min-h-[calc(100vh-4rem)] border-b border-text-secondary/60 px-4 py-16 sm:px-6 sm:py-20 md:px-12 lg:px-20"
+      className="scroll-mt-16 flex min-h-dvh items-center border-b border-text-secondary/60 px-4 py-12 sm:px-6 md:px-12 lg:px-20"
     >
-      <div className="mx-auto grid max-w-5xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+      <div className="mx-auto grid w-full max-w-5xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
         <div className="space-y-6">
           <p className="font-mono text-label uppercase tracking-widest text-accent">
             01 · início
