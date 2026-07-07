@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg-primary: theme('colors.bg.primary');
+    --color-bg-surface: theme('colors.bg.surface');
+    --color-accent: theme('colors.accent.DEFAULT');
+    --color-accent-light: theme('colors.accent.light');
+    --color-text-primary: theme('colors.text.primary');
+    --color-text-secondary: theme('colors.text.secondary');
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-bg-primary text-text-primary font-body antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent/30 text-text-primary;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
