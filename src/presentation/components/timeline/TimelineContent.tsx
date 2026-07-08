@@ -1,13 +1,22 @@
 import type { TimelineEntry } from '@/domain/entities/TimelineEntry'
 import { TimelineItem } from '@/presentation/components/timeline/TimelineItem'
+import { TimelineWave } from '@/presentation/components/timeline/TimelineWave'
+import { Reveal } from '@/presentation/components/Reveal'
+import { getLocalizedTimelineEntry } from '@/shared/i18n/content'
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 function TimelineSkeleton() {
   return (
-    <div className="animate-pulse space-y-10">
+    <div className="animate-pulse space-y-[var(--section-gap)]">
       <div className="h-10 w-48 rounded-sm bg-bg-surface" />
-      <div className="space-y-8 border-l border-text-secondary pl-8">
+      <div className="relative mx-auto max-w-3xl space-y-8">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="h-32 rounded-sm bg-bg-surface" />
+          <div
+            key={index}
+            className={`h-36 w-full rounded-sm bg-bg-surface md:max-w-[280px] ${
+              index % 2 === 0 ? 'md:mr-auto' : 'md:ml-auto'
+            }`}
+          />
         ))}
       </div>
     </div>
@@ -19,26 +28,39 @@ interface TimelineContentProps {
 }
 
 function TimelineContent({ entries }: TimelineContentProps) {
-  return (
-    <div className="space-y-10">
-      <header className="space-y-3">
-        <h2 className="font-display text-display-md font-medium text-balance">
-          Linha do tempo
-        </h2>
-        <p className="max-w-2xl font-body text-body-md text-text-primary/70">
-          Nove meses de estudo intensivo — do HTML ao Docker, com Java em
-          andamento e Spring Boot no horizonte.
-        </p>
-      </header>
+  const { locale, t } = useTranslation()
 
-      <ol
-        className="relative border-l border-accent/30 pl-8"
-        aria-label="Trajetória de aprendizado"
-      >
-        {entries.map((entry) => (
-          <TimelineItem key={entry.id} entry={entry} />
-        ))}
-      </ol>
+  return (
+    <div className="space-y-[var(--section-gap)]">
+      <Reveal>
+        <header className="space-y-3">
+          <h2 className="font-display text-display-md font-medium text-balance">
+            {t.timeline.title}
+          </h2>
+          <p className="max-w-2xl font-body text-body-md text-text-primary/70">
+            {t.timeline.subtitle}
+          </p>
+        </header>
+      </Reveal>
+
+      <div className="relative mx-auto max-w-3xl">
+        <TimelineWave count={entries.length} />
+
+        <ol className="relative" aria-label={t.a11y.learningPath}>
+          <span
+            className="pointer-events-none absolute bottom-8 left-[7px] top-2 w-px bg-accent/20 md:hidden"
+            aria-hidden="true"
+          />
+          {entries.map((entry, index) => (
+            <Reveal key={entry.id} delay={index * 0.1}>
+              <TimelineItem
+                entry={getLocalizedTimelineEntry(entry, locale)}
+                position={index % 2 === 0 ? 'left' : 'right'}
+              />
+            </Reveal>
+          ))}
+        </ol>
+      </div>
     </div>
   )
 }
