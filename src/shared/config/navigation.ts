@@ -3,18 +3,15 @@ export const SITE = {
   initials: 'A.',
 } as const
 
-export interface NavItem {
-  id: string
-  label: string
-}
+export const NAV_ITEM_IDS = [
+  'hero',
+  'sobre',
+  'skills',
+  'projetos',
+  'trajetoria',
+  'contato',
+] as const
 
-export const NAV_ITEMS: NavItem[] = [
-  { id: 'hero', label: 'Início' },
-  { id: 'sobre', label: 'Sobre' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'projetos', label: 'Projetos' },
-  { id: 'trajetoria', label: 'Trajetória' },
-  { id: 'contato', label: 'Contato' },
-]
+export type NavItemId = (typeof NAV_ITEM_IDS)[number]
 
 export const HEADER_HEIGHT = '4rem'
