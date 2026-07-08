@@ -10,15 +10,21 @@
     --color-accent-light: theme('colors.accent.light');
     --color-text-primary: theme('colors.text.primary');
     --color-text-secondary: theme('colors.text.secondary');
+
+    --header-height: 4rem;
+    --section-px: clamp(1rem, 5vw, 5rem);
+    --section-py: clamp(1rem, 3vh, 2rem);
+    --section-gap: clamp(1.5rem, 4vw, 3rem);
+    --section-max-width: 80rem;
   }
 
   html {
-    @apply scroll-smooth;
+    @apply scroll-smooth overflow-x-hidden;
     scroll-padding-top: 4rem;
   }
 
   body {
-    @apply bg-bg-primary text-text-primary font-body antialiased;
+    @apply overflow-x-hidden bg-bg-primary text-text-primary font-body antialiased;
   }
 
   a:focus-visible,
@@ -29,10 +35,88 @@
   ::selection {
     @apply bg-accent/30 text-text-primary;
   }
+
+  body.custom-cursor-active,
+  body.custom-cursor-active a,
+  body.custom-cursor-active button {
+    cursor: none;
+  }
+
+  @media (pointer: coarse) {
+    body.custom-cursor-active,
+    body.custom-cursor-active a,
+    body.custom-cursor-active button {
+      cursor: auto;
+    }
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer components {
+  .section-shell {
+    @apply relative scroll-mt-16 flex min-h-dvh items-center overflow-hidden;
+    padding-top: calc(var(--header-height) + var(--section-py));
+    padding-bottom: var(--section-py);
+  }
+
+  .section-shell--hero {
+    height: 100svh;
+    min-height: 100svh;
+    max-height: 100svh;
+    padding-bottom: calc(var(--section-py) + 2.5rem);
+  }
+
+  .section-container {
+    @apply mx-auto w-full min-w-0;
+    max-width: var(--section-max-width);
+    padding-inline: var(--section-px);
+  }
+
+  .hero-portrait {
+    @apply relative mx-auto w-full overflow-visible;
+    aspect-ratio: 4 / 5;
+    width: min(100%, clamp(14rem, 34vw, 26rem));
+    max-height: calc((100svh - var(--header-height) - var(--section-py) * 2 - 3.5rem) * 0.88);
+  }
+
+  .hero-portrait__photo {
+    max-height: 88%;
+    width: auto;
+    object-fit: contain;
+    object-position: bottom center;
+    -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
+  }
+
+  @media (max-height: 700px) {
+    .section-shell {
+      padding-top: calc(var(--header-height) + 0.75rem);
+      padding-bottom: 0.75rem;
+    }
+
+    .section-shell--hero {
+      padding-bottom: calc(0.75rem + 2rem);
+    }
+
+    .hero-portrait {
+      width: min(100%, clamp(12rem, 42vw, 20rem));
+      max-height: calc((100svh - var(--header-height) - 4rem) * 0.72);
+    }
+
+    .hero-portrait__photo {
+      max-height: 82%;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero-portrait {
+      width: min(100%, clamp(13rem, 58vw, 18rem));
+      max-height: min(42svh, 20rem);
+    }
   }
 }
