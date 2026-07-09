@@ -1,6 +1,7 @@
 import type { ProjectsRepository } from '@/domain/repositories/ProjectsRepository'
 import type { Project } from '@/domain/entities/Project'
 import { projectsData } from './data/projects.data'
+import { enrichProjectWithDetails } from './data/projectDetails.data'
 
 const simulateLatency = (ms = 80) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms))
@@ -9,10 +10,14 @@ function sortByRelevance(projects: Project[]): Project[] {
   return [...projects].sort((a, b) => a.relevanceRank - b.relevanceRank)
 }
 
+function enrichAll(projects: Project[]): Project[] {
+  return sortByRelevance(projects.map(enrichProjectWithDetails))
+}
+
 export class MockProjectsRepository implements ProjectsRepository {
   async getAll(): Promise<Project[]> {
     await simulateLatency()
-    return sortByRelevance(projectsData)
+    return enrichAll(projectsData)
   }
 
   async getFeatured(): Promise<Project[]> {

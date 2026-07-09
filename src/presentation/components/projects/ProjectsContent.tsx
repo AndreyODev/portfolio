@@ -1,15 +1,27 @@
 import { useMemo, useState } from 'react'
 import type { Project } from '@/domain/entities/Project'
-import { ProjectCard } from '@/presentation/components/projects/ProjectCard'
+import { ProjectCarousel } from '@/presentation/components/projects/ProjectCarousel'
+import { Reveal } from '@/presentation/components/Reveal'
+import { getLocalizedProject } from '@/shared/i18n/content'
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 function ProjectsSkeleton() {
   return (
-    <div className="animate-pulse space-y-10">
+    <div className="animate-pulse space-y-[var(--section-gap)]">
       <div className="h-10 w-48 rounded-sm bg-bg-surface" />
       <div className="h-10 w-full max-w-sm rounded-sm bg-bg-surface" />
-      <div className="grid gap-4 sm:grid-cols-2">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="h-48 rounded-sm bg-bg-surface" />
+      <div className="flex items-center gap-4">
+        <div className="hidden h-11 w-11 shrink-0 rounded-full bg-bg-surface sm:block" />
+        <div className="grid flex-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="h-48 rounded-sm bg-bg-surface" />
+          ))}
+        </div>
+        <div className="hidden h-11 w-11 shrink-0 rounded-full bg-bg-surface sm:block" />
+      </div>
+      <div className="flex justify-center gap-2">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div key={index} className="h-2.5 w-2.5 rounded-full bg-bg-surface" />
         ))}
       </div>
     </div>
@@ -35,73 +47,65 @@ interface ProjectsContentProps {
 
 function ProjectsContent({ featured, projects }: ProjectsContentProps) {
   const [query, setQuery] = useState('')
+  const { locale, t } = useTranslation()
 
-  const filteredFeatured = useMemo(
-    () => filterProjects(featured, query),
-    [featured, query],
+  const localizedProjects = useMemo(() => {
+    const merged = [...featured, ...projects.filter((p) => !p.featured)]
+    const seen = new Set<string>()
+    return merged
+      .filter((project) => {
+        if (seen.has(project.id)) return false
+        seen.add(project.id)
+        return true
+      })
+      .map((project) => getLocalizedProject(project, locale))
+  }, [featured, projects, locale])
+
+  const filteredProjects = useMemo(
+    () => filterProjects(localizedProjects, query),
+    [localizedProjects, query],
   )
 
-  const filteredRest = useMemo(() => {
-    const featuredIds = new Set(featured.map((p) => p.id))
-    const rest = projects.filter((p) => !featuredIds.has(p.id))
-    return filterProjects(rest, query)
-  }, [featured, projects, query])
-
-  const hasResults = filteredFeatured.length > 0 || filteredRest.length > 0
+  const hasResults = filteredProjects.length > 0
 
   return (
-    <div className="space-y-10">
-      <header className="space-y-3">
-        <h2 className="font-display text-display-md font-medium text-balance">
-          Projetos
-        </h2>
-        <p className="max-w-2xl font-body text-body-md text-text-primary/70">
-          Do backend em camadas ao frontend estático — ordenados por relevância
-          técnica e complexidade.
-        </p>
-      </header>
+    <div className="space-y-[var(--section-gap)]">
+      <Reveal>
+        <header className="space-y-3">
+          <h2 className="font-display text-display-md font-medium text-balance">
+            {t.projects.title}
+          </h2>
+          <p className="max-w-2xl font-body text-body-md text-text-primary/70">
+            {t.projects.subtitle}
+          </p>
+        </header>
+      </Reveal>
 
-      <label className="block max-w-sm">
-        <span className="sr-only">Filtrar por nome ou stack</span>
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="filtrar por nome ou stack…"
-          className="w-full border border-text-secondary bg-bg-surface px-4 py-3 font-mono text-body-sm text-text-primary placeholder:text-text-primary/35 focus:border-accent focus:outline-none"
-        />
-      </label>
+      <Reveal delay={0.1}>
+        <label className="block max-w-sm">
+          <span className="sr-only">{t.a11y.filterProjects}</span>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder={t.projects.filterPlaceholder}
+            className="w-full border border-text-secondary bg-bg-surface px-4 py-3 font-mono text-body-sm text-text-primary placeholder:text-text-primary/35 focus:border-accent focus:outline-none"
+          />
+        </label>
+      </Reveal>
 
       {!hasResults && (
-        <p className="font-mono text-body-sm text-text-primary/50">
-          Nenhum projeto corresponde ao filtro.
-        </p>
+        <Reveal>
+          <p className="font-mono text-body-sm text-text-primary/50">
+            {t.projects.noResults}
+          </p>
+        </Reveal>
       )}
 
-      {filteredFeatured.length > 0 && (
-        <section aria-label="Projetos em destaque">
-          <p className="mb-4 font-mono text-label uppercase tracking-widest text-accent">
-            destaque
-          </p>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {filteredFeatured.map((project) => (
-              <ProjectCard key={project.id} project={project} featured />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {filteredRest.length > 0 && (
-        <section aria-label="Demais projetos">
-          <p className="mb-4 font-mono text-label uppercase tracking-widest text-accent">
-            demais projetos
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredRest.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
-          </div>
-        </section>
+      {filteredProjects.length > 0 && (
+        <Reveal delay={0.15}>
+          <ProjectCarousel projects={filteredProjects} />
+        </Reveal>
       )}
     </div>
   )
