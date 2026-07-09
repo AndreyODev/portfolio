@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from 'react'
 import type { ContactFormValues } from '@/application/hooks/useContactForm'
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 const inputStyles =
   'w-full border border-accent/30 bg-bg-primary px-4 py-3 font-body text-body-sm text-text-primary placeholder:text-text-primary/35 focus:border-accent focus:outline-none'
@@ -44,14 +45,16 @@ export function ContactForm({
   onChange,
   onSubmit,
 }: ContactFormProps) {
+  const { t } = useTranslation()
+
   return (
     <div className="flex h-full flex-col">
       <p className="mb-5 font-mono text-label uppercase tracking-widest text-accent">
-        formulário
+        {t.contact.form}
       </p>
 
       <form onSubmit={onSubmit} className="flex flex-1 flex-col gap-5" noValidate>
-        <FormField id="contact-name" label="nome" error={errors.name}>
+        <FormField id="contact-name" label={t.contact.name} error={errors.name}>
           <input
             id="contact-name"
             name="name"
@@ -65,7 +68,7 @@ export function ContactForm({
           />
         </FormField>
 
-        <FormField id="contact-email" label="e-mail" error={errors.email}>
+        <FormField id="contact-email" label={t.contact.email} error={errors.email}>
           <input
             id="contact-email"
             name="email"
@@ -79,7 +82,11 @@ export function ContactForm({
           />
         </FormField>
 
-        <FormField id="contact-message" label="mensagem" error={errors.message}>
+        <FormField
+          id="contact-message"
+          label={t.contact.message}
+          error={errors.message}
+        >
           <textarea
             id="contact-message"
             name="message"
@@ -99,12 +106,12 @@ export function ContactForm({
           disabled={isSubmitting}
           className="mt-auto w-full border border-accent px-6 py-3 font-mono text-label uppercase text-accent-light transition-colors hover:bg-accent/10 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
-          {isSubmitting ? 'enviando…' : 'enviar mensagem'}
+          {isSubmitting ? t.contact.submitting : t.contact.submit}
         </button>
 
         {isSuccess && (
           <p className="font-mono text-[0.7rem] text-accent-light" role="status">
-            Mensagem enviada com sucesso.
+            {t.contact.success}
           </p>
         )}
       </form>

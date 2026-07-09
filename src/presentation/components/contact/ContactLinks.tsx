@@ -3,6 +3,7 @@ import {
   GitHubIcon,
   LinkedInIcon,
 } from '@/presentation/components/contact/ContactIcons'
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 interface ContactLinkItem {
   id: string
@@ -18,12 +19,6 @@ interface ContactLinksProps {
   github: string
   linkedin: string
 }
-
-const LINKS: Omit<ContactLinkItem, 'value' | 'href'>[] = [
-  { id: 'github', label: 'github', external: true, Icon: GitHubIcon },
-  { id: 'linkedin', label: 'linkedin', external: true, Icon: LinkedInIcon },
-  { id: 'email', label: 'e-mail', external: false, Icon: EmailIcon },
-]
 
 function ContactLink({ label, value, href, external, Icon }: ContactLinkItem) {
   return (
@@ -52,6 +47,14 @@ function ContactLink({ label, value, href, external, Icon }: ContactLinkItem) {
 }
 
 export function ContactLinks({ email, github, linkedin }: ContactLinksProps) {
+  const { t } = useTranslation()
+
+  const links: Omit<ContactLinkItem, 'value' | 'href'>[] = [
+    { id: 'github', label: 'github', external: true, Icon: GitHubIcon },
+    { id: 'linkedin', label: 'linkedin', external: true, Icon: LinkedInIcon },
+    { id: 'email', label: t.contact.email, external: false, Icon: EmailIcon },
+  ]
+
   const values: Record<string, { href: string; value: string }> = {
     github: {
       href: github,
@@ -70,11 +73,11 @@ export function ContactLinks({ email, github, linkedin }: ContactLinksProps) {
   return (
     <div className="flex h-full flex-col">
       <p className="mb-5 font-mono text-label uppercase tracking-widest text-accent">
-        links diretos
+        {t.contact.directLinks}
       </p>
 
-      <ul className="space-y-3" aria-label="Links diretos">
-        {LINKS.map((link) => (
+      <ul className="space-y-3" aria-label={t.a11y.directLinks}>
+        {links.map((link) => (
           <ContactLink
             key={link.id}
             {...link}
