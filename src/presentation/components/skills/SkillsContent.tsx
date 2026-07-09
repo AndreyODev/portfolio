@@ -1,5 +1,7 @@
 import type { SkillGroup } from '@/application/use-cases/getSkills'
 import { SkillLayerGroup } from '@/presentation/components/skills/SkillLayerGroup'
+import { Reveal } from '@/presentation/components/Reveal'
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 function SkillsSkeleton() {
   return (
@@ -23,21 +25,26 @@ interface SkillsContentProps {
 }
 
 function SkillsContent({ groups }: SkillsContentProps) {
+  const { t } = useTranslation()
+
   return (
-    <div className="space-y-10">
-      <header className="space-y-3">
-        <h2 className="font-display text-display-md font-medium text-balance">
-          Stack por camada
-        </h2>
-        <p className="max-w-2xl font-body text-body-md text-text-primary/70">
-          Agrupada como na arquitetura do código — frontend, backend, dados,
-          infraestrutura e o que está em construção.
-        </p>
-      </header>
+    <div className="space-y-[var(--section-gap)]">
+      <Reveal>
+        <header className="space-y-3">
+          <h2 className="font-display text-display-md font-medium text-balance">
+            {t.skills.title}
+          </h2>
+          <p className="max-w-2xl font-body text-body-md text-text-primary/70">
+            {t.skills.subtitle}
+          </p>
+        </header>
+      </Reveal>
 
       <div className="space-y-8">
-        {groups.map((group) => (
-          <SkillLayerGroup key={group.layer} group={group} />
+        {groups.map((group, index) => (
+          <Reveal key={group.layer} delay={index * 0.1}>
+            <SkillLayerGroup group={group} />
+          </Reveal>
         ))}
       </div>
     </div>

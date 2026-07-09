@@ -1,11 +1,6 @@
 import type { ProficiencyLevel } from '@/domain/types'
 import type { Skill } from '@/domain/entities/Skill'
-
-const LEVEL_LABELS: Record<ProficiencyLevel, string> = {
-  dominated: 'dominado',
-  proficient: 'proficiente',
-  learning: 'em estudo',
-}
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 function getChipStyles(skill: Skill): string {
   if (skill.id === 'spring-boot') {
@@ -24,9 +19,9 @@ function getChipStyles(skill: Skill): string {
   }
 }
 
-function getLevelLabel(skill: Skill): string {
-  if (skill.id === 'spring-boot') return 'próximo'
-  return LEVEL_LABELS[skill.level]
+function getLevelLabel(skill: Skill, levels: Record<ProficiencyLevel | 'next', string>): string {
+  if (skill.id === 'spring-boot') return levels.next
+  return levels[skill.level]
 }
 
 interface SkillChipProps {
@@ -34,13 +29,15 @@ interface SkillChipProps {
 }
 
 export function SkillChip({ skill }: SkillChipProps) {
+  const { t } = useTranslation()
+
   return (
     <li
       className={`inline-flex items-center gap-2 border px-3 py-2 ${getChipStyles(skill)}`}
     >
       <span className="font-mono text-body-sm">{skill.name}</span>
       <span className="font-mono text-[0.6rem] uppercase tracking-wider text-text-primary/40">
-        {getLevelLabel(skill)}
+        {getLevelLabel(skill, t.skills.levels)}
       </span>
     </li>
   )
