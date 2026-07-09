@@ -4,6 +4,7 @@ import {
   emailjsConfig,
   isEmailjsConfigured,
 } from '@/shared/config/emailjs'
+import { useTranslation } from '@/shared/i18n/LanguageProvider'
 
 export interface ContactFormValues {
   name: string
@@ -24,31 +25,8 @@ interface UseContactFormResult {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function validate(
-  values: ContactFormValues,
-): Partial<Record<ContactFormField, string>> {
-  const errors: Partial<Record<ContactFormField, string>> = {}
-
-  if (!values.name.trim()) {
-    errors.name = 'Informe seu nome.'
-  }
-
-  if (!values.email.trim()) {
-    errors.email = 'Informe seu e-mail.'
-  } else if (!EMAIL_PATTERN.test(values.email.trim())) {
-    errors.email = 'E-mail inválido.'
-  }
-
-  if (!values.message.trim()) {
-    errors.message = 'Escreva uma mensagem.'
-  } else if (values.message.trim().length < 10) {
-    errors.message = 'Mínimo de 10 caracteres.'
-  }
-
-  return errors
-}
-
 export function useContactForm(): UseContactFormResult {
+  const { t } = useTranslation()
   const [values, setValues] = useState<ContactFormValues>({
     name: '',
     email: '',
@@ -59,6 +37,30 @@ export function useContactForm(): UseContactFormResult {
   )
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+
+  function validate(
+    formValues: ContactFormValues,
+  ): Partial<Record<ContactFormField, string>> {
+    const nextErrors: Partial<Record<ContactFormField, string>> = {}
+
+    if (!formValues.name.trim()) {
+      nextErrors.name = t.contact.errors.nameRequired
+    }
+
+    if (!formValues.email.trim()) {
+      nextErrors.email = t.contact.errors.emailRequired
+    } else if (!EMAIL_PATTERN.test(formValues.email.trim())) {
+      nextErrors.email = t.contact.errors.emailInvalid
+    }
+
+    if (!formValues.message.trim()) {
+      nextErrors.message = t.contact.errors.messageRequired
+    } else if (formValues.message.trim().length < 10) {
+      nextErrors.message = t.contact.errors.messageMin
+    }
+
+    return nextErrors
+  }
 
   function handleChange(field: ContactFormField, value: string) {
     setValues((current) => ({ ...current, [field]: value }))
@@ -84,7 +86,7 @@ export function useContactForm(): UseContactFormResult {
 
     if (!isEmailjsConfigured()) {
       setErrors({
-        message: 'Serviço de e-mail não configurado. Verifique o .env.local.',
+        message: t.contact.errors.emailNotConfigured,
       })
       return
     }
@@ -109,7 +111,7 @@ export function useContactForm(): UseContactFormResult {
       setIsSuccess(true)
     } catch {
       setErrors({
-        message: 'Não foi possível enviar. Tente novamente em instantes.',
+        message: t.contact.errors.sendFailed,
       })
     } finally {
       setIsSubmitting(false)
