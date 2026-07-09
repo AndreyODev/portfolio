@@ -19,7 +19,7 @@ export const profileData: Profile = {
   monthsStudying: 9,
   currentlyLearning: ['Java'],
   nextStep: ['Spring Boot'],
-  email: '[[ seu-email@exemplo.com ]]',
+  email: 'andreyoliveira72005@gmail.com',
   github: 'https://github.com/AndreyODev',
-  linkedin: '[[ seu-linkedin ]]',
+  linkedin: 'https://www.linkedin.com/in/andrey-oliveira-dev/',
 }
